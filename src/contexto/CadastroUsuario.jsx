@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const usuarioInicial = {
     perfil: '',
@@ -32,7 +34,6 @@ export const useCadastroUsuarioContext = () => {
 }
 
 export const CadastroUsuarioProvider = ({ children }) => {
-
     const navegar = useNavigate()
 
     const [usuario, setUsuario] = useState(usuarioInicial)
@@ -103,12 +104,15 @@ export const CadastroUsuarioProvider = ({ children }) => {
     }
 
     const submeterUsuario = () => {
-        // if (usuario.senha.length < 8) {
-
-        //     return
-        // }
-        console.log(usuario)
-        navegar('/cadastro/concluido')
+        
+       axios.post('http://localhost:8080/auth/register', usuario)
+       .then(() => {
+            navegar('/cadastro/concluido')
+       })
+       .catch((error) => {
+        console.log(error)
+       })   
+        
     }
 
     const possoSelecionarInteresse = () => {
@@ -133,3 +137,7 @@ export const CadastroUsuarioProvider = ({ children }) => {
         {children}
     </CadastroUsuarioContext.Provider>)
 }
+
+CadastroUsuarioProvider.propTypes = {
+    children: PropTypes.node 
+};
